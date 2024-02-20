@@ -23,11 +23,6 @@ app.mount(
 class ComRequest(BaseModel):
     name: str
 
-# Model for competitor analysis response
-class ComResponse(BaseModel):
-    company_name: str
-    analysis: str
-
 # Create an instance to the classes
 
 agent = MarketResarchAgent()
@@ -36,8 +31,6 @@ agent = MarketResarchAgent()
 dbObj = DBClient(config_path="resources/config.json")
 dbObj.connect()
 
-data = dbObj.execute_query(query="SELECT * FROM organization;")
-print(data)
 
 templates = Jinja2Templates(directory="templates")
 
@@ -47,6 +40,7 @@ async def root(request: Request):
         "index.html", {"request": request}
     )
 
+# Endpoint to get the company names that will be loaded into drop down list on UI
 @app.get("/get_companies")
 async def get_companies():
     data = dbObj.execute_query("SELECT name FROM organization;")
@@ -56,7 +50,7 @@ async def get_companies():
     
     return {"companies": company_names}
 
-# Endpoint for market research analysis
+# Endpoint for market research analysis recives payload from UI and prompts to openAI
 @app.post("/analyse_competitors")
 async def  analyze_competitors(company: ComRequest):
     data = dbObj.execute_query(f"select sector, address from organization where name = '{company.name}'")
@@ -68,7 +62,7 @@ async def  analyze_competitors(company: ComRequest):
     completion = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
-        {"role": "system", "content": f"Give me the list of competators of a company whose sector is {sector} and address is {address}"},
+        {"role": "system", "content": f"Give me the list of competators of in a sector {sector} and address is {address}. Just use the information of the sector a company belongs"},
     ]
     )
 
