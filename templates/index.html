@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Market Research Analysis</title>
+    <link href="{{ url_for('static', path='style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <h1>Market Research Analysis</h1>
+    <div>
+        <label for="companies">Select a company:</label>
+        <select id="companies"></select>
+        <button id="analyzeButton">Analyze Competitors</button>
+    </div>
+    <div id="response"></div>
+    <div id="loader" class="loader"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', path='script.js') }}"></script>
+</body>
+</html>
