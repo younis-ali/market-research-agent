@@ -53,16 +53,25 @@ async def get_companies():
 # Endpoint for market research analysis recives payload from UI and prompts to openAI
 @app.post("/analyse_competitors")
 async def  analyze_competitors(company: ComRequest):
-    data = dbObj.execute_query(f"select sector, address from organization where name = '{company.name}'")
+    data = dbObj.execute_query(f"select sector, address, description, size from organization where name = '{company.name}'")
+
+    # print(data)
 
     sector  = data[0][0]
     address = data[0][1]
+    description = data[0][2]
+    size = data[0][3]
+
+    # print(sector)
+    # print(address)
+    # print(description)
+    # print(size)
 
     client = OpenAI()
     completion = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
-        {"role": "system", "content": f"Give me the list of competators of in a sector {sector} and address is {address}. Just use the information of the sector a company belongs"},
+        {"role": "system", "content": f"Given the sector '{sector}', address '{address}', description '{description}', and size '{size}' of a company, please provide a list of its top 5 competitors with a breif description in the same sector. Consider factors such as market presence, product offerings, geographical proximity, and company size (startup, medium, large)."},
     ]
     )
 

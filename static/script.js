@@ -21,12 +21,32 @@ $(document).ready(function () {
                 url: "/analyse_competitors",
                 contentType: "application/json",
                 data: JSON.stringify({ "name": selectedCompany }),
-                success: function (response) {
+                
+                // success: function (response) {
                     
-                    $("#loader").hide();
+                //     $("#loader").hide();
 
-                    $("#response").text(response.message);
-                },
+                //     $("#response").text(response.message);
+                // },
+
+                success: function (response) {
+                    $("#loader").hide();
+                
+                    // Split the response by numbering
+                    let competitors = response.message.split(/\d+\.\s*/);
+                    competitors.shift(); // Remove empty first element
+                
+                    // Create an HTML table with numbering
+                    let table = "<table>";
+                    for (let i = 0; i < competitors.length; i++) {
+                        table += "<tr><td>" + (i + 1) + ".</td><td>" + competitors[i] + "</td></tr>";
+                    }
+                    table += "</table>";
+                
+                    // Display the table in the response div
+                    $("#response").html(table);
+                },                
+                
                 error: function () {
                     
                     $("#loader").hide();
